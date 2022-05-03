@@ -1,0 +1,88 @@
+% Created 2022-03-29 ter 21:13
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{amsthm}
+
+\theoremstyle{definition}
+\newtheorem{teo}{Teorema}[section]
+\theoremstyle{definition}
+\newtheorem{defi}{Definicao}[section]
+\theoremstyle{remark}
+\newtheorem{obs}{Observação}[section]
+\theoremstyle{remark}
+\newtheorem{lema}{Lema}[section]
+\theoremstyle{remark}
+\newtheorem{prop}{Propriedade}[section]
+\theoremstyle{remark}
+\newtheorem{coro}{Corolario}[section]
+\theoremstyle{definition}
+\newtheorem{prep}{Preposição}[section]
+\author{Ieremies Romero, Gian Luna}
+\date{}
+\title{MO824 - Atividade 1}
+\hypersetup{
+ pdfauthor={Ieremies Romero, Gian Luna},
+ pdftitle={MO824 - Atividade 1},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.6)}, 
+ pdflang={Portuguese}}
+\usepackage{biblatex}
+\addbibresource{~/arq/bib.bib}
+\begin{document}
+
+\maketitle
+
+\section*{Formulation}
+\label{sec:org5863df3}
+\subsection*{Objective Function}
+\label{sec:org7c88d03}
+Our objective, as said in the activity, is to minimize the costs of production and shipment of goods from a set of factories to another set of clients. Since we have cost associated with each of those operations, we will utilize two set of variables: \(x_{p,l,f}\) to represent the amount (in tons) of product \(p \in P\) produced by machine \(l \in L\) at factory \(f \in F\) and \(y_{p, f, j}\) to represent the amount (in tons) of product \(p \in P\) transported from factory \(f \in F\) to client \(j \in J\).
+
+That way, we can describe our objective function as
+\[ \min z = \sum \limits_{p \in P} \sum_{f \in F} (\sum \limits_{l \in L} x_{p,f,l}p_{p,f,l} + \sum_{j \in J} y_{p,f,j}t_{p,f,j)}). \]
+\subsection*{Restrictions}
+\label{sec:org55ab83c}
+First, we need to ensure every demand is satisfied, which means the amount of each product transported for each client should be at least greater than the client's demand. In another terms, we have
+\[ D_{p,j} \leq \sum_{f \in F} y_{p,f,j} \ \forall p \in P \ \forall j \in J. \]
+
+Then, we have to ensure the amount of products produced should match the amount transported from each factory.
+\[ \sum \limits_{l \in L} x_{p,f,l} = \sum_{j \in J} y_{p,f,j} \ \forall p \in P \ \forall f \in F . \]
+
+Lastly, we have to be able to produced said products, which means, we must have the materials required and the capacity.
+\begin{align*}
+R_{m,f} &\geq \sum \limits_{p \in P} \sum \limits_{l \in L} x_{p,f,l}r_{m,p,l} \ \forall f \in F \ \forall m \in M \\
+C_{f,l} &\geq \sum_{p \in P} x_{p,f,l} \ \forall l \in L \ \forall f \in F.
+\end{align*}
+
+To complete our restrictions, since we modeled each variable as the amount produced, they should be positive.
+\begin{align*}
+x_{p,l,f} &\geq 0 \ \forall p \in P \ \forall l \in L \ \forall f \in F \\
+y_{p,l,j} &\geq 0 \ \forall p \in P \ \forall l \in L \ \forall j \in J.
+\end{align*}
+\subsection*{Final program}
+\label{sec:orga152067}
+Combining everything, we have our Linear Program as follows.
+
+
+\begin{align*}
+\min z &= \sum \limits_{p \in P} \sum_{f \in F} (\sum \limits_{l \in L} x_{p,l,f}p_{p,f,l} + \sum_{j \in J} y_{p,f,j}t_{p,f,j)}) \\
+\text{subject to } \sum_{f \in F} y_{p,f,j} &\geq D_{p,j} \ \forall p \in P \ \forall j \in J. \\
+\sum \limits_{l \in L} x_{p,f,l} - \sum_{j \in J} y_{p,f,j} &= 0 \ \forall p \in P \ \forall f \in F . \\
+\sum \limits_{p \in P} \sum \limits_{l \in L} x_{p,f,l}r_{m,p,l} &\leq R_{m,f} \ \forall f \in F \ \forall m \in M \\
+\sum_{p \in P} x_{p,f,l} &\leq C_{f,l} \ \forall l \in L \ \forall f \in F. \\
+x_{p,l,f} &\geq 0 \ \forall p \in P \ \forall l \in L \ \forall f \in F \\
+y_{p,l,j} &\geq 0 \ \forall p \in P \ \forall l \in L \ \forall j \in J.
+\end{align*}
+\end{document}

@@ -1,5 +1,5 @@
 #Read file
-data <- read.csv("~/Documentos/github/maestriaCS/metodoligia_investigacion_computacion/exercise_2/ex2.csv", stringsAsFactors = FALSE) 
+data <- read.csv("~/Documentos/mestradoCS/metodoligia_investigacion_computacion/exercise_2/ex2.csv", stringsAsFactors = FALSE) 
 
 set.seed(10)
 
@@ -10,8 +10,7 @@ no_diabetes <- data$bp[data$type=="No"]
 #'-------------------------
 #'teste t
 #'-------------------------
-test <- t.test(si_diabetes, no_diabetes) # test t
-
+test <- t.test(si_diabetes, no_diabetes) # teste
 print(test)
 #data:  si_diabetes and no_diabetes
 #t = 2.9592, df = 130.28, p-value = 0.003665

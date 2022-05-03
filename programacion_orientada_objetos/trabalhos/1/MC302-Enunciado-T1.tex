@@ -1,0 +1,392 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{ae}
+\usepackage{amssymb,amsmath,amssymb,graphicx,fancyhdr,epsfig,psfrag,tabularx,float,caption}
+\usepackage[paperwidth=210mm,paperheight=297mm]{geometry}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+\usepackage{url}
+\usepackage{listings} % needed for the inclusion of source code
+
+% the following is needed for syntax highlighting
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  inputencoding=latin1, %evitar erros de acentos
+  language=Java,                  % the language of the code
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line 
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=4,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,        % sets if automatic breaks should only happen at whitespace
+  %title=\lstname,                 % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add a comment within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+
+\hyphenation{pro-ble-mas}
+
+\begin{document}
+
+\selectlanguage{brazil}
+
+\begin{large}
+	\begin{center}
+		\textbf{MC302} \\
+		Primeiro semestre de 2017 \\ \vspace{0.5cm}
+		\textbf{Trabalho 1}
+	\end{center}
+\end{large}
+\vspace{0.25cm}
+\noindent \textbf{Professores:} Esther Colombini (esther@ic.unicamp.br) e Fábio Luiz Usberti (fusberti@ic.unicamp.br) \\
+\textbf{PEDs: (Turmas ABCD)} Elisangela Santos (ra149781@students.ic.unicamp.br), Lucas Faloni\\ (lucasfaloni@gmail.com), Lucas David (lucasolivdavid@gmail.com), Wellington Moura\\ (wellington.tylon@hotmail.com) \\
+\textbf{PEDs (Turmas EF)} Natanael Ramos (naelr8@gmail.com), Rafael Arakaki (rafaelkendyarakaki@gmail.com) \\
+\textbf{PAD: (Turmas ABCD)} Igor Torrente (igortorrente@hotmail.com) \\
+\textbf{PAD: (Turmas EF)} Bleno Claus (blenoclaus@gmail.com) \\
+
+\hrule \hrule
+
+\section{Objetivo}
+
+Estudo e implementação dos conceitos de programação orientada a objetos, abordados em aula, para uma aplicação na área de jogos eletrônicos.
+
+\section{Regras do Jogo}
+
+Chamaremos o nosso jogo de \textbf{LaMa} (\textbf{La}caios e \textbf{Ma}gias), as regras do jogo são:
+
+\begin{itemize}
+    \item Cada jogador inicia com um Herói com trinta pontos de vida. Vence o jogador que reduzir a vida do Herói do oponente a zero.
+    \item O baralho possui trinta cartas, sendo 22 Lacaios e 8 Magias.
+    \item O primeiro jogador inicia com 3 cartas, enquanto o segundo jogador inicia o jogo com 4 cartas.
+    \item Todo o início de turno cada jogador compra uma carta do baralho, de maneira aleatória. 
+    \item No turno $i$, cada jogador possui min$(i,10)$ de mana para ser utilizado em uso de cartas ou poder heróico, não podendo ultrapassar este valor. O limite de mana é acrescido até o décimo turno e então não aumenta mais. \textbf{Exceção}: O segundo jogador possui dois de mana no primeiro turno ao invés de um de mana.
+    \item Existem dois tipos de carta: Lacaios e Magias. 
+    \begin{itemize}
+        \item Lacaios são baixados à mesa e não podem atacar no turno em que são baixados, apenas no turno seguinte (se ainda estiverem vivos!).
+        \item Magias possuem efeitos imediatos ao serem utilizadas. Existem três tipos de magias: (i) dano em alvo, (ii) dano em área, (iii) magia de buff. As magias de dano em alvo causam dano em um único lacaio do oponente à escolha do jogador utilizador ou no herói do oponente. As magias de área causam dano em todos os lacaios e também no herói do oponente. Por fim, as magias de buff podem aumentar o ataque e a vida de um dos lacaios do jogador que a utilizar.
+    \end{itemize}
+    \item O jogador pode utilizar, uma vez por turno, o poder heróico de seu Herói ao custo de duas unidades de mana. O poder heróico faz o Herói atacar um alvo qualquer com um de dano. Se o alvo do poder heróico for um Lacaio, o Herói que atacou receberá de dano o ataque do Lacaio alvo.
+    \item Cada Lacaio pode escolher atacar um alvo por turno. Os possíveis alvos são: o Herói do oponente e os Lacaios em mesa do oponente. Se o Lacaio $x$ atacar o Lacaio $y$, o Lacaio $y$ tem sua vida diminuída pelo poder de ataque do Lacaio $x$, e o Lacaio $x$ tem sua vida diminuída pelo poder de ataque do Lacaio $y$. Se a vida de um Lacaio chegar a zero, ele morre e é retirado da mesa.
+    \item Se um Lacaio atacar um Herói, a vida do Herói é reduzida pelo poder de ataque do Lacaio mas o Lacaio não sofre nenhum tipo de dano. 
+    \item O jogador pode possuir até sete cartas na mão. Se já possuir sete cartas ao início de seu turno, a nova carta que foi comprada será descartada.
+    \item  Quando o jogador fica sem cartas para comprar do baralho chamamos esse estado de jogo de \textit{fadiga}. A \textit{fadiga} inicia quando em um dado turno não for possível a um jogador comprar cartas porque o baralho já está esgotado, então o jogador recebe um de dano no início daquele turno. No próximo início de turno receberá dois de dano, depois três, e assim por diante.
+    \item \textbf{Cada jogador só pode ter até sete lacaios vivos em seus respectivos campos.}
+\end{itemize}
+
+\section{Descrição do Trabalho}
+
+É esperado do aluno que implemente uma classe de \textbf{Jogador}, que irá analisar o jogo e tomar decisões para tentar vencer o jogo. Deste modo, uma das tarefas que se espera é que a classe \textbf{Jogador} implementada pelo aluno consiga ser competitiva, isto é, que vença o máximo de partidas que for possível ao jogar contra outras classes jogadoras.
+
+A classe do jogador deve ser chamada \textbf{JogadorRA}xxxxxx (onde ``xxxxxx'' é o RA do aluno). A classe de jogador do aluno deve herdar da classe \textbf{Jogador} abstrata. Dois atributos são herdados da classe \textbf{Jogador} abstrata:
+
+\begin{itemize}
+    \item ArrayList<Carta> mao: É um ArrayList de objetos da classe Carta. Possui as cartas que estão na mão do jogador. Deve ser inicializada no método construtor.
+    \item boolean primeiroJogador: É um atributo booleano que diz se a classe foi escolhida como primeiro ou segundo jogador na partida. Se primeiroJogador é verdadeiro, a classe foi escolhida para ser o primeiro, senão foi escolhido para ser o segundo. Deve ser inicializada no método construtor.
+\end{itemize}
+
+Dois métodos deverão ser obrigatoriamente implementados para interagir com o Motor do jogo:
+
+\begin{enumerate}
+    \item public JogadorRAxxxxxx (ArrayList<Carta> maoInicial, boolean primeiro){}
+    \item public ArrayList<Jogada> processarTurno (Mesa mesa, Carta cartaComprada, ArrayList<Jogada> jogadasOponente){}
+\end{enumerate}
+
+O primeiro método é o método construtor, que deverá ser responsável por inicializar todos os atributos que você utilizar em sua classe. Além disso, este método deve preparar a sua classe para iniciar uma partida, recebendo como argumento uma lista de cartas da mão inicial em \textbf{maoInicial} e uma variável booleana \textbf{primeiro} que diz se esta classe foi escolhida para ser o primeiro jogador ou não. Um exemplo da implementação do método construtor é mostrado a seguir:
+
+\lstinputlisting[language=Java]{construtor.java}
+
+O segundo método, nomeado \textbf{processarTurno()}, será chamado a cada turno do jogador para que este faça suas jogadas devolvendo um objeto \textbf{ArrayList<Jogada>}, ou seja, um ArrayList de objetos da classe Jogada. Como entrada este método recebe:
+
+\begin{itemize}
+    \item Um objeto da classe \textbf{Mesa} que possui todas as informações do estado corrente da mesa (isto é, lacaios e suas vidas, vida dos heróis, número de cartas de cada jogador, mana disponível para este turno para cada jogador, etc).
+    \item Um objeto da classe Carta que possui a carta que foi comprada neste turno.
+    \item Um ArrayList de objetos da classe Jogada que contém as jogadas feitas pelo oponente no último turno dele.
+\end{itemize} 
+
+Deste modo, com essas informações a classe \textbf{JogadorRA} deverá ser capaz de decidir suas jogadas deste turno. Uma maneira de começar a implementar o método \textbf{processarTurno()} é criar objetos para diferenciar entre quais são os seus Lacaios e quais são os do oponente, com base nas informações do objeto Mesa. Veja o exemplo a seguir:
+
+% As únicas coisas que o objeto Mesa não informa são: (i) quem é o primeiro jogador e quem é o segundo, (ii) quais são as cartas nas mãos de cada jogador. As cartas iniciais são informadas no método \textbf{iniciarPartida()} e a cada turno no argumento \textbf{cartaComprada}, portanto a classe \textbf{JogadorRA} é que deverá gerenciar quais cartas já comprou e quais já utilizou. Também deve ter informação de que se é o primeiro jogador ou o segundo utilizando o atributo \textbf{primeiroJogador}.
+
+%Uma maneira de começar a implementar o método \textbf{processarTurno()} é criar objetos para diferenciar entre quais são os seus Lacaios e quais são os do oponente, com base nas informações do objeto Mesa, veja o exemplo a seguir:
+
+\lstinputlisting[language=Java]{processarTurno.java}
+
+\section{Descrição do Motor}
+
+O Motor irá se comunicar com a classe \textbf{JogadorRA} através dos métodos construtor e \textbf{processarTurno()} supracitados. O método construtor é executado somente uma vez, fornecendo a mão inicial e a informação de qual jogador a classe é (primeiro ou segundo). Em seguida serão feitas várias chamadas ao método \textbf{processarTurno()} para cada turno daquela partida.
+
+A seguir serão apresentadas as principais classes que serão utilizadas no trabalho.
+
+\subsection{Classe Carta}
+
+A classe Carta é descrita na Tabela \ref{tab:carta}. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. Por convenção, se o nome de um atributo é composto como vidaAtual, então o método get correspondente se chamará getVidaAtual (note que a letra v virou maiúscula).
+
+%Existem dois construtores para a classe Carta, um é utilizado quando a carta é do tipo lacaio e outro quando a carta é do tipo magia.
+
+%O construtor da carta lacaio é dado por: public \textbf{Carta}(int id, String nome, TipoCarta tipo, int ataque, int vida, int vidaMesa, int mana).
+
+%O construtor da carta de magia é dado por: public \textbf{Carta}(int id, String nome, TipoCarta tipo, TipoMagia magiaTipo, int magiaDano, int mana).
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe Carta}
+\label{tab:carta}
+\begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+\hline
+Atributo & Tipo & Descrição & Domínio \\ \hline
+ID       & int       & ID único de uma carta         & Inteiro positivo                 \\ \hline
+nome     & String    & Nome da carta        & String                \\ \hline
+custoMana  & int     & Custo de mana da carta        & Inteiro positivo              \\ \hline
+\end{tabular}
+\end{table}
+
+Note que a classe Carta (Tabela \ref{tab:carta}) é uma classe abstrata. Existem duas classes que herdam da classe Carta: CartaLacaio e CartaMagia que serão descritas a seguir.
+
+\subsection{Classe CartaLacaio}
+
+A classe CartaLacaio é descrita na Tabela \ref{tab:cartaLacaio}. Uma vez que a classe CartaLacaio herda da classe Carta, a classe CartaLacaio possui também os atributos e métodos da classe abstrata Carta. Na Tabela \ref{tab:cartaLacaio} são mostrados apenas os atributos específicos da classe CartaLacaio. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. 
+
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe CartaLacaio}
+\label{tab:cartaLacaio}
+\begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+\hline
+Atributo & Tipo & Descrição & Domínio \\ \hline
+ataque   & int       & Ataque da carta        & Inteiro positivo               \\ \hline
+vidaAtual & int       & Vida da carta durante o jogo & Inteiro positivo                \\ \hline
+vidaMaxima & int  & Vida da carta sem contar danos & Inteiro positivo                \\ \hline
+efeito     & TipoEfeito & (Não será cobrado no Trabalho 1) & Enumeração \\ \hline
+turno     & int       & (Utilizado pelo Motor) & Inteiro positivo                \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Classe CartaMagia}
+
+A classe CartaMagia é descrita na Tabela \ref{tab:cartaMagia}. Uma vez que a classe CartaMagia herda da classe Carta, a classe CartaMagia possui também os atributos e métodos da classe abstrata Carta. Na Tabela \ref{tab:cartaMagia} são mostrados apenas os atributos específicos da classe CartaMagia. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. 
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe CartaMagia}
+\label{tab:cartaMagia}
+\begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+\hline
+Atributo & Tipo & Descrição & Domínio \\ \hline
+magiaTipo & TipoMagia & Define o tipo da magia & Enumeração: ALVO, AREA ou BUFF \\ \hline
+magiaDano & int       & Valor de dano ou buff  & Inteiro positivo \\ \hline
+\end{tabular}
+\end{table}
+
+%Exemplo da criação de uma carta Lacaio e de uma carta Magia:
+
+%\lstinputlisting[language=Java]{exemploCartas.java}
+
+\subsection{Classe Mesa}
+
+A classe Mesa é descrita na Tabela \ref{tab:mesa}. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. A convenção para nomes de get e set é a mesma da aplicada para a classe Carta.
+
+A Mesa é um objeto que será fornecido no início de todo turno para a classe \textbf{JogadorRA} através do método \textbf{processarTurno()}. A Mesa irá fornecer o \textbf{estado do jogo} imediatamente antes do início do turno do jogador correspondente. É necessário consultar a Mesa para descobrir, por exemplo, se um dado lacaio ainda está vivo no jogo ou não.
+
+Exemplo da consulta de Lacaios vivos do oponente através da classe Mesa:
+
+\lstinputlisting[language=Java]{exemploMesa.java}
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe Mesa}
+\label{tab:mesa}
+\begin{tabular}{|l|l|p{4cm}|p{4cm}|}
+\hline
+Atributo & Tipo & Descrição & Domínio \\ \hline
+lacaiosJog1   & ArrayList<Carta> & Lacaios na mesa do herói 1 & Cartas que são lacaios vivos na mesa \\ \hline
+lacaiosJog2   & ArrayList<Carta> & Lacaios na mesa do herói 2 & Cartas que são lacaios vivos na mesa \\ \hline
+vidaHeroi1      & int & Vida do herói 1 & Inteiro entre [0,30] \\ \hline
+vidaHeroi2      & int & Vida do herói 2 & Inteiro entre [0,30] \\ \hline
+numCartasJog1   & int & Número de Cartas jogador 1 & Inteiro entre [0,10] \\ \hline
+numCartasJog2   & int & Número de Cartas jogador 2  & Inteiro entre [0,10] \\ \hline
+manaJog1      & int & Mana disponível neste turno para jogador 1 & Inteiro entre [1,10] \\ \hline
+manaJog2      & int & Mana disponível neste turno para jogador 2 & Inteiro entre [1,10] \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Classe Jogada}
+
+A classe Jogada é descrita no texto abaixo. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. A convenção para nomes de get e set é a mesma da aplicada para a classe Carta. Os atributos da classe Jogada são os seguintes:
+
+\begin{itemize}
+    \item \textit{tipo}: Um atributo do tipo \textbf{TipoJogada} (enumeração) que define se a jogada trata-se de baixar um lacaio à mesa (TipoJogada.LACAIO), utilizar uma magia (TipoJogada.MAGIA), atacar com um lacaio (TipoJogada.ATAQUE) ou utilizar um poder heróico (TipoJogada.PODER).
+    \item \textit{cartaJogada}: Um atributo da classe \textbf{Carta} que define qual carta está sendo utilizada. No caso de baixar um lacaio (TipoJogada.LACAIO) é o lacaio que será baixado, no caso de utilizar uma magia é a carta da magia (TipoJogada.MAGIA), no caso de atacar com um lacaio é o lacaio que irá atacar (TipoJogada.ATAQUE). Toma valor \textbf{null} no caso de Poder Heróico.
+    \item \textit{cartaAlvo}: Um atributo da classe \textbf{Carta} que define qual carta será utilizada como alvo. Ou então toma o valor \textbf{null} para ter como alvo o herói do oponente. Se for realizar um ataque (TipoJogada.ATAQUE) ou utilizar uma magia de alvo (TipoJogada.MAGIA) o campo deve conter a carta do lacaio do oponente que será alvo desse dano, ou então \textbf{null} para ter o herói como alvo.
+\end{itemize}
+
+Note que alguns campos não são utilizados dependendo da jogada, a Tabela \ref{tab:jogada} mostra quais campos são utilizados para cada tipo de jogada (X) e quais não são (vazio). Por exemplo, se a jogada é de baixar um lacaio, o tipo será TipoJogada.LACAIO, e o atributo cartaJogada será o lacaio que será baixado à mesa. Porém o atributo cartaAlvo será ignorado e como convenção deve-se utilizar \textbf{null} nesta situação.
+
+O construtor da classe Jogada é: public \textbf{Jogada}(TipoJogada tipo, Carta cartaJogada, Carta cartaAlvo).
+
+\renewcommand{\arraystretch}{1.05}
+\begin{table}[]
+\centering
+\caption{Atributos relevantes por tipo de Jogada}
+\label{tab:jogada}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+Tipo & cartaJogada & cartaAlvo \\ \hline
+TipoJogada.LACAIO          & X &   \\ \hline
+TipoJogada.MAGIA de alvo   & X & X \\ \hline
+TipoJogada.MAGIA de área   & X &   \\ \hline
+TipoJogada.MAGIA de buff   & X & X \\ \hline
+TipoJogada.ATAQUE          & X & X \\ \hline
+TipoJogada.PODER           &   & X \\ \hline
+\end{tabular}
+\end{table}
+
+\section{Exemplos de Código}
+
+Aqui mostraremos alguns exemplos de como criar uma \textbf{Jogada} de Baixar Lacaio, Usar Magia, Poder Heróico e Ataque de Lacaio.
+
+Exemplo de Jogada para baixar um lacaio à mesa:
+
+\lstinputlisting[language=Java]{jogadaLacaio.java}
+
+Exemplo de Jogada para utilizar magia de alvo:
+
+\lstinputlisting[language=Java]{jogadaMagia1.java}
+
+Exemplo de Jogada para utilizar magia de área:
+
+\lstinputlisting[language=Java]{jogadaMagia2.java}
+
+Exemplo de Jogada para utilizar magia de buff:
+
+\lstinputlisting[language=Java]{jogadaMagia3.java}
+
+Exemplo de Jogada para utilizar um poder heróico:
+
+\lstinputlisting[language=Java]{jogadaPoder.java}
+
+Exemplo de Jogada para atacar com um lacaio em outro lacaio:
+
+\lstinputlisting[language=Java]{jogadaAtacar1.java}
+
+Exemplo de Jogada para atacar com um lacaio no herói do oponente:
+
+\lstinputlisting[language=Java]{jogadaAtacar2.java}
+
+Exemplo de como percorrer as cartas da mão em ordem, e baixar à mesa todos os lacaios que a mana permitir:
+
+\lstinputlisting[language=Java]{percorrerDroparLacaio.java}
+
+\section{Comportamentos}
+
+Dentro do jogo LaMa os jogadores costumam adotar certas estratégias típicas, chamadas aqui de comportamentos, para tentar vencer o jogo. Dentre outras, três comportamentos se destacam: (i) agressivo, (ii) controle, (iii) curva de mana. \textit{A sua classe \textbf{JogadorRA} deverá possuir os três comportamentos implementados.} Além disso, a classe deverá adotar algum critério para determinar em qual comportamento irá jogar a cada momento (Seção \ref{ssec:criterio}).
+
+\subsection{Agressivo}
+
+O comportamento agressivo objetiva causar dano no herói do oponente o mais rápido possível. Esse comportamento pode ser entendido como a abordagem mais direta e de curto prazo ao objetivo do jogo. As prioridades desse comportamento são baixar lacaios de ataque alto, usar magias de alvo no herói do oponente e quase nunca realizar trocas com os lacaios do oponente (obs: ``trocas'' é uma expressão para designar quando um lacaio ataca um outro lacaio do adversário).
+
+\subsection{Controle}
+
+O comportamento de controle objetiva manter um controle do campo acumulando mais lacaios vivos do que o oponente e assim podendo realizar ``trocas favoráveis''. Entende-se por ``troca favorável'' quando um lacaio $x$ ataca um lacaio $y$ do oponente onde: (i) o lacaio $x$ sobreviverá e o lacaio $y$ não; (ii) ambos os lacaios morrerão, porém o custo de mana do lacaio $y$ é maior do que o custo de mana do lacaio $x$; (iii) ambos os lacaios morrerão, porém o lacaio $x$ já estava danificado e possui menos vida do que o lacaio $y$. Quando não há trocas favoráveis, a estratégia controle usa seus lacaios para atacar o herói do oponente.
+
+O uso das magias é muito importante no comportamento de controle. Procura-se utilizar as magias para matar lacaios do oponente de maneira eficiente. Por eficiente considera-se que: (i) magias de área são usadas somente se houver dois ou mais lacaios do oponente em campo; (ii) magias de dano em alvo são usadas apenas para eliminar lacaios e onde a diferença entre o dano da magia e a vida atual do lacaio é pequena (no máximo $1$, por exemplo), em outras palavras, não ``desperdiça-se'' dano de magias de alvo. O comportamento controle prioriza manter sob controle os lacaios do oponente e por isso prefere eliminar lacaios do oponente com magias ao invés de descer lacaios mais poderosos.
+
+\subsection{Curva de mana}
+
+O comportamento de curva de mana é um comportamento meio termo entre o agressivo e o controle. Esse comportamento procura usar as cartas da mão de maneira a utilizar toda a mana disponível em cada turno. Lacaios que possuem o custo exato do total de mana daquele turno são tidos como prioridade. Por exemplo, no turno 5 uma boa jogada de curva de mana é: (i) baixar um lacaio de custo $5$; (ii) baixar um lacaio de custo $3$ de mana e utilizar uma magia de custo $2$ para matar um lacaio do adversário. As trocas são realizadas de maneira parecidas ao do controle.
+
+As magias somente são utilizadas se forem eliminar lacaio(s) que somem mais do que o custo de mana da própria magia. Essa estratégia procura ganhar vantagem fazendo um uso mais eficiente da mana do que o oponente. O comportamento de curva de mana prefere descer lacaios de custo de mana alto (mais poderosos) ao invés de eliminar lacaios do oponente com magias. Um problema dessa estratégia é que ao chegar no décimo turno ela não se torna tão viável uma vez que haverá muita mana para ser utilizada em todos os turnos seguintes.
+
+\subsection{Critério de comportamento} \label{ssec:criterio}
+
+A classe \textbf{JogadorRA} deverá implementar algum critério para escolher entre qual comportamento irá jogar a cada momento do jogo. Esse critério poderá levar em conta fatores como: (i) estágio do jogo (início, meio, fim), (ii) vida do seu herói e do oponente, (iii) quais cartas existem na mão, (iv) quais cartas já foram utilizadas pelo adversário, entre muitos outros possíveis. O critério adotado deve ser claramente e sucintamente apresentado no cabeçalho do código-fonte (Seção \ref{ssec:componentes}).
+
+\section{Saída do programa}
+
+\textbf{Atenção}: a classe \textbf{JogadorRA} não deve imprimir nada na saída do programa.
+
+\section{Critério de Avaliação}
+
+A nota do trabalho será composta por dois componentes, conforme mostra a equação a seguir:
+
+\begin{align*}
+NT_{1} = \min\{10, Q + C\}
+\end{align*}
+
+Onde:
+
+\begin{itemize}
+    \item $NT_1$: Nota do Trabalho 1
+    \item $Q \in [0,10]$: Componente de qualidade do trabalho de acordo com os critérios: corretude, aderência, estratégia, comentários e convenções. 
+    \item $C \in [0,2]$: Componente de competitivade do jogador, ou seja, o quão eficiente é esse jogador ao disputar com os demais jogadores. Cabe observar que este componente entrará como \textbf{bonificação} à nota do Trabalho 1.
+\end{itemize}
+
+
+
+
+\subsection{Componente de qualidade da implementação} \label{ssec:componentes}
+
+\begin{enumerate}
+    \item \textbf{Corretude:} O código não deve possuir \textit{warnings} ou erros de compilação. O código não deve emitir \textit{exceptions} em nenhuma situação. As jogadas realizadas pelo jogador devem ser válidas, segundo as regras do jogo, em todas as situações.
+    \item \textbf{Aderência ao Enunciado:} A implementação deve realizar o que é requisitado no enunciado.
+    \item \textbf{Estratégia do jogador:} No cabeçalho do código-fonte deve haver um texto comentado, de pelo menos 30 e no máximo 60 linhas, descrevendo organizadamente a estratégia adotada pelo seu jogador \textit{para cada comportamento}, ou seja, quais critérios são utilizados para baixar lacaios, utilizar magias, utilizar poder heróico, escolher os alvos e quando utilizar magias de área. Além disso, descreva em poucas palavras qual o critério que seu jogador utiliza para \textit{trocar entre os comportamentos}. Você leva em consideração quantos pontos de vida seu adversário ou você tem para decidir uma jogada? Você considera quais cartas possui na mão e quais ainda estão no baralho ? Você utiliza algum tipo de memória, por exemplo para avaliar as cartas já baixadas pelo seu adversário? Você utiliza memória para avaliar o comportamento do seu adversário durante o jogo? (Obs: a organização e clareza do seu texto também implicará na nota deste componente).
+    \item \textbf{Comentários:} Os comentários devem ser suficientes para explicar os trechos mais importantes da implementação, utilizando-se de terminologias corretas vistas em sala de aula quando isso se aplicar. Dê preferência para o uso de comentários no padrão Javadoc.
+    \item \textbf{Convenções:} Os nomes das entidades de seu código devem seguir as convenções Java. Além disso, seu código deve estar corretamente identado e bem apresentado segundo as boas práticas da linguagem.
+%    \item \textbf{Criatividade:} Uma implementação correta pode ser feita de diversas maneiras, este critério bonifica as implementações criativas e originais para tratar os desafios contidos no trabalho.
+\end{enumerate}
+
+\subsection{Componente de competitividade do jogador}
+
+O componente de competitividade refere-se ao número de vitórias do jogador relativo ao número de vitórias dos demais jogadores. O jogador mais competitivo (maior número de vitórias) receberá a bonificação máxima (2). Será introduzido um jogador ``ingênuo'' no campeonato que fornecerá um limitante inferior de competitividade. A bonificação mínima (0) corresponderá ao número de vitórias do jogador ``ingênuo''. O componente de competitividade será calculado de acordo com a seguinte equação:
+
+\begin{align}
+C = 2 \times \left(\frac{V_{jogador}-V_{min}}{V_{max}-V_{min}}\right) 
+\end{align}
+
+\begin{itemize}
+    \item $V_{jogador}$: Número de vitórias obtidas pelo jogador no campeonato.
+    \item $V_{min}$: Número de vitórias obtidas pelo jogador ``ingênuo'' do campeonato.
+    \item $V_{max}$: Número máximo de vitórias obtidas pelo melhor jogador do campeonato.
+%    \item $\delta = 10^{-6}$: infinitesimal para evitar divisão por zero.
+\end{itemize}
+
+\section{Observações}
+
+\begin{itemize}
+    \item O trabalho é individual.
+    \item Não é permitido nenhum tipo de compartilhamento de código entre os alunos ou o uso de códigos de terceiros. Uma única exceção permitida consiste nas APIs da linguagem Java. Em caso de plágio, todos os alunos envolvidos serão reprovados com média zero. 
+    \item Não é permitido explorar nenhuma brecha de segurança (\textit{exploit}) do Motor. Se você encontrar alguma brecha, relate imediatamente ao professor.
+\end{itemize}
+ 
+\section{Submissão}
+
+O trabalho deverá ser submetido até as 23:55 do dia 28 de abril de 2017, através do Moodle. A submissão deve ser exclusivamente um arquivo nomeado JogadorRAxxxxxx.java (onde ``'xxxxxx' é o RA do aluno). Após submeter, certifique-se de que o arquivo enviado é o correto.
+
+\end{document}
+% end of file template.tex

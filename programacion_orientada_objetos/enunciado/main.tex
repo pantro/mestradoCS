@@ -1,0 +1,175 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{ae}
+\usepackage{amssymb,amsmath,amssymb,graphicx,fancyhdr,epsfig,psfrag,tabularx,float,caption}
+\usepackage[paperwidth=210mm,paperheight=297mm]{geometry}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+\usepackage{url}
+\usepackage{listings} % inclusion of source code
+\usepackage{hyperref} % clean URLs
+
+% the following is needed for syntax highlighting
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  language=Java,                  % the language of the code
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line 
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=4,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add a comment within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+
+% \newcommand{\blue}{\textcolor{blue}}
+% \newcommand{\blue}{}
+\hyphenation{pro-ble-mas}
+
+\begin{document}
+
+\selectlanguage{brazil}
+
+\begin{large}
+	\begin{center}
+		\textbf{MC302} \\
+		Primeiro semestre de 2017 \\ \vspace{0.5cm}
+		\textbf{Laboratório 1}
+	\end{center}
+\end{large}
+\vspace{0.25cm}
+\noindent \textbf{Professor(a):} Esther Colombini (esther@ic.unicamp.br) \\
+\textbf{PEDs:} Elisangela Santos (ra149781@students.ic.unicamp.br), Lucas Faloni (lucasfaloni@gmail.com), Lucas David (lucasolivdavid@gmail.com), Wellington Moura (wellington.tylon@hotmail.com) \\
+\textbf{PAD:} Túlio Martins (tuliomartinstm1523@gmail.com) \\
+%\noindent \textbf{Professor(a):} Fábio Luiz Usberti (fusberti@ic.unicamp.br) \\
+%\textbf{PEDs:} Natanael Ramos (naelr8@gmail.com), Rafael Arakaki (rafaelkendyarakaki@gmail.com) \\
+%\textbf{PAD:} Bleno Claus (blenoclaus@gmail.com) \\
+
+\hrule \hrule
+
+\section{Objetivo}
+
+O objetivo desta atividade consiste na familiarização com o ambiente de desenvolvimento integrado (IDE, \textit{Integrated Development Environment}) chamado Eclipse\footnote{https://eclipse.org} e a linguagem de programação Java\footnote{https://www.java.com}.
+
+\section{Atividade}
+
+Nesta atividade o principal foco será a familiarização com o Eclipse e a programação de duas classes chamadas \textbf{CartaLacaio} e \textbf{CartaMagia}. A primeira tarefa será configurar o ambiente com a criação de um novo projeto e de uma nova classe para então programar.
+
+Os seguintes passos podem ser tomados para a criação do projeto:
+\begin{enumerate}
+    \item Abra o Eclipse.
+    \item Crie um novo projeto (File -> New -> Java Project).
+    \item Digite o nome do projeto (ex: Lab1).
+    \item Na aba JRE escolha a última versão do JavaSE instalado na máquina (ex: JavaSE-1.7 ou JavaSE-1.8).
+    \item Clique em Finish.
+\end{enumerate}
+
+Para criar uma nova classe faça:
+\begin{enumerate}
+	\item Utilize a aba 'Package Explorer' que aparece do lado esquerdo da IDE.
+    \item Crie uma nova classe no projeto (Botão direito no projeto -> New -> Class).
+    \item Digite o nome da classe.
+    \item Programe a classe.
+\end{enumerate}
+
+\section{Classe CartaLacaio}
+
+A classe CartaLacaio deste laboratório é baseada em um jogo de cartas de computador chamado Hearthstone\footnote{http://us.battle.net/hearthstone/pt} \textcopyright, neste jogo existem cartas do tipo \emph{Lacaio} que possuem atributos como ataque e vida distintos para cada carta.
+
+A classe CartaLacaio deve ter os seguintes atributos:
+\begin{itemize}
+    \item ID (número inteiro)
+    \item nome (cadeia de caracteres - \emph{String})
+    \item ataque (número inteiro)
+    \item vidaAtual (número inteiro)
+    \item vidaMaxima (número inteiro)
+    \item custoMana (número inteiro)
+\end{itemize}
+
+O exemplo abaixo apresenta a declaração da classe CartaLacaio e seus atributos. Note que todas as variáveis são declaradas como privadas (\textbf{private}). Note também a implementação dos métodos de acesso get() e set(), esses métodos são comumente utilizados na linguagem Java para acessar os atributos dos objetos.
+
+\lstinputlisting[language=Java]{CartaLacaio.java}
+
+Além disso a classe CartaLacaio deve conter um método construtor, o método construtor deve receber como argumentos os atributos para inicializar o objeto. Para ilustrar esse conceito melhor, veja o exemplo abaixo.
+
+\lstinputlisting[language=Java]{MetodoConstrutor.java}
+
+Também é necessário que a classe CartaLacaio possua uma função \textbf{toString()} que devolve uma String contendo uma descrição geral dos atributos da carta. Veja o exemplo abaixo:
+
+\lstinputlisting[language=Java]{toString.java}
+
+Observe que são utilizados os métodos de get e set. É necessário programar estes métodos antes de utilizá-los, logo para cada atributo da classe CartaLacaio deve existir um método get e set correspondente. O formato do método toString() a ser implementado é livre, mas todos os atributos devem ser impressos.
+
+Faça a implementação do método \textbf{construtor}, métodos \textbf{get()} e \textbf{set()} de todos os atributos e do método \textbf{toString()} para a classe \textbf{CartaLacaio}.
+
+\section{Classe CartaMagia}
+
+Utilizando a classe CartaLacaio como base, crie a classe CartaMagia e faça a implementação do método \textbf{construtor}, métodos \textbf{get()} e \textbf{set()} de todos os atributos e do método \textbf{toString()} para a classe \textbf{CartaMagia}.
+
+A classe CartaMagia deve ter os seguintes atributos:
+\begin{itemize}
+    \item ID (número inteiro)
+    \item nome (cadeia de caracteres - \emph{String})
+    \item dano (número inteiro)
+    \item area (variável da lógica booleana - \emph{boolean})
+    \item custoMana (número inteiro)
+\end{itemize}
+
+\section{Classe Main}
+
+Para um programa Java funcionar é requerida a existência de um método main que serve de ponto da partida para o programa ser inicializado. Crie uma nova classe através do Eclipse chamada Main e escolha a opção para gerar automaticamente o método main.
+
+Na função main realize a instanciação de alguns objetos do tipo CartaLacaio ou CartaMagia (pelo menos um de cada) com valores de atributos quaisquer conforme sua imaginação. Após instanciar os objetos, imprima seus dados utilizando o método System.out.println(). Veja o exemplo a seguir:
+
+\lstinputlisting[language=Java]{print.java}
+
+Observe que ao imprimir os dados dos objetos da classe CartaLacaio ou CartaMagia, o método toString() que você implementou foi chamado implicitamente. 
+
+Após implementar as três classes, para executar o programa e ver o resultado clique no botão ``Run'' do Eclipse.
+
+\section{Tarefas}
+
+\begin{itemize}
+	\item Criação do projeto e classes.
+	\item Programação dos métodos construtores das classes CartaLacaio e CartaMagia.
+	\item Programação dos métodos get e set das classes CartaLacaio e CartaMagia.
+	\item Programação dos métodos toString das classes CartaLacaio e CartaMagia.
+	\item Programação do método main e impressões de algumas cartas.
+\end{itemize}
+
+\section{Submissão}
+
+Para submeter a atividade utilize o Moodle (\url{https://www.ggte.unicamp.br/ea}). Salve os arquivos dessa atividade em um arquivo comprimido no formato .tar.gz e nomeie-o \textbf{Lab1-000000.tar.gz} trocando '000000' pelo seu número de RA. Submeta o arquivo na seção correspondente para esse laboratório no moodle da disciplina MC302.
+
+\textbf{Datas de entrega}
+\begin{itemize}
+    \item Dia \textbf{20/03} Turma \textbf{ABCD} até às 23:55
+    \item Dia \textbf{17/03} Turma \textbf{EF} até às 23:55
+\end{itemize}
+
+\end{document}
+% end of file template.tex

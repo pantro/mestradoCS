@@ -1,0 +1,424 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{ae}
+\usepackage{amssymb,amsmath,amssymb,graphicx,fancyhdr,epsfig,psfrag,tabularx,float,caption}
+\usepackage[paperwidth=210mm,paperheight=297mm]{geometry}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+\usepackage{url}
+\usepackage{listings} % needed for the inclusion of source code
+
+% the following is needed for syntax highlighting
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  inputencoding=latin1, %evitar erros de acentos
+  language=Java,                  % the language of the code
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line 
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=4,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,        % sets if automatic breaks should only happen at whitespace
+  %title=\lstname,                 % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add a comment within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+
+\hyphenation{pro-ble-mas li-te-ra-tu-ra}
+
+\begin{document}
+
+\selectlanguage{brazil}
+
+\begin{large}
+	\begin{center}
+		\textbf{MC302} \\
+		Primeiro semestre de 2017 \\ \vspace{0.5cm}
+		\textbf{Trabalho 2}
+	\end{center}
+\end{large}
+\vspace{0.25cm}
+\noindent \textbf{Professores:} Esther Colombini (esther@ic.unicamp.br) e Fábio Luiz Usberti (fusberti@ic.unicamp.br) \\
+\textbf{PEDs: (Turmas ABCD)} Elisangela Santos (ra149781@students.ic.unicamp.br), Lucas Faloni\\ (lucasfaloni@gmail.com), Lucas David (lucasolivdavid@gmail.com), Wellington Moura\\ (wellington.tylon@hotmail.com) \\
+\textbf{PEDs (Turmas EF)} Natanael Ramos (naelr8@gmail.com), Rafael Arakaki (rafaelkendyarakaki@gmail.com) \\
+\textbf{PAD: (Turmas ABCD)} Igor Torrente (igortorrente@hotmail.com) \\
+\textbf{PAD: (Turmas EF)} Bleno Claus (blenoclaus@gmail.com) \\
+
+\hrule \hrule
+
+\section{Objetivo}
+
+Estudo e aplicação dos conceitos de programação orientada a objetos, abordados em aula, para uma aplicação na área de jogos utilizando-se da linguagem de programação Java.
+
+
+\section{Regras do Jogo}
+
+As regras do \textbf{LaMa} são:
+
+\begin{enumerate}
+    \item Cada jogador inicia com um Herói com trinta pontos de vida. Vence o jogador que reduzir a vida do Herói do oponente a zero.
+    \item O baralho possui trinta cartas, sendo 22 Lacaios e 8 Magias.
+    \item O primeiro jogador inicia com 3 cartas, enquanto o segundo jogador inicia o jogo com 4 cartas.
+    \item Todo o início de turno cada jogador compra uma carta do baralho, de maneira aleatória. 
+    \item No turno $i$, cada jogador possui min$(i,10)$ de mana para ser utilizado em uso de cartas ou poder heróico, não podendo ultrapassar este valor. O limite de mana é acrescido até o décimo turno e então não aumenta mais. \textbf{Exceção}: O segundo jogador possui dois de mana no primeiro turno ao invés de um de mana.
+    \item Existem dois tipos de carta: Lacaios e Magias. 
+    \begin{itemize}
+        \item Lacaios são baixados à mesa e não podem atacar no turno em que são baixados, apenas no turno seguinte (se ainda estiverem vivos!).
+        \item Magias possuem efeitos imediatos ao serem utilizadas. Existem três tipos de magias: (i) dano em alvo, (ii) dano em área, (iii) magia de buff. As magias de dano em alvo causam dano em um único lacaio do oponente à escolha do jogador utilizador ou no herói do oponente. As magias de área causam dano em todos os lacaios e também no herói do oponente. Por fim, as magias de buff podem aumentar o ataque e a vida de um dos lacaios do jogador que a utilizar. Não é permitido usar magia de buff em lacaio do oponente.
+    \end{itemize}
+    \item Não é possível ter mais de sete lacaios em campo.
+    \item Um lacaio só pode atacar no máximo uma vez por turno, assim como o poder heróico também só pode ser utilizado no máximo uma vez por turno.
+    \item O jogador pode utilizar, uma vez por turno, o poder heróico de seu Herói ao custo de duas unidades de mana. O poder heróico faz o Herói atacar um alvo qualquer com um de dano. Se o alvo do poder heróico for um Lacaio, o Herói que atacou receberá de dano o ataque do Lacaio alvo.
+    \item Cada Lacaio pode escolher atacar um alvo por turno. Os possíveis alvos são: o Herói do oponente e os Lacaios em mesa do oponente. Se o Lacaio $x$ atacar o Lacaio $y$, o Lacaio $y$ tem sua vida diminuída pelo poder de ataque do Lacaio $x$, e o Lacaio $x$ tem sua vida diminuída pelo poder de ataque do Lacaio $y$. Se a vida de um Lacaio chegar a zero, ele morre e é retirado da mesa.
+    \item Se um Lacaio atacar um Herói, a vida do Herói é reduzida pelo poder de ataque do Lacaio mas o Lacaio não sofre nenhum tipo de dano. 
+    \item O jogador pode possuir até sete cartas na mão. Se já possuir sete cartas ao início de seu turno, a nova carta que seria comprada é descartada.
+    \item  Quando o jogador fica sem cartas para comprar do baralho chamamos esse estado de jogo de \textit{fadiga}. A \textit{fadiga} inicia quando em um dado turno não for possível a um jogador comprar cartas porque o baralho já está esgotado, então o jogador recebe um de dano no início daquele turno. No próximo início de turno receberá dois de dano, depois três, e assim por diante.
+    \item  \textbf{Para o Trabalho 2, os lacaios podem possuir efeitos especiais de investida, ataque duplo ou provocar.} (Seção \ref{sec:efeitos}).
+\end{enumerate}
+
+\section{Descrição do Trabalho}
+
+A atividade proposta para este trabalho será a implementação de um Motor para o jogo \textbf{LaMa} (\textbf{La}caios e \textbf{Ma}gias).
+
+\subsection{Classe Motor (abstrata)}
+
+O Motor é responsável pelo controle das jogadas de cada jogador e mantém a informação de tudo o que acontece no jogo. Cabe ao Motor verificar a validade das jogadas dos Jogadores e, em caso de jogadas inválidas, reportar um erro correspondente explicitando qual regra que o Jogador violou com sua jogada.
+
+O aluno deverá implementar uma classe que herdará da classe \textbf{Motor} (abstrata). Esta classe deverá ser chamada \textbf{MotorRA}xxxxxx (onde ``xxxxxx'' é o RA do aluno). A classe \textbf{Motor} possui um construtor, dois métodos abstratos e dois métodos concretos \textit{finais}. São os métodos da classe \textbf{Motor}:
+
+\begin{itemize}
+    \item Motor(): Método construtor. Inicializa os atributos da classe. A classe \textbf{MotorRA} deverá chamar este construtor através do método super().
+    \item executarPartida() \textit{(abstrato)}: É o método que é executado após o objeto Motor ser instanciado e realiza uma partida entre dois jogadores. Este método deve retornar um inteiro contendo qual é o jogador vencedor se não houver nenhum erro durante a execução do Motor. O valor de retorno é $1$ se o primeiro jogador é vencedor, e $2$ se o segundo jogador é o vencedor. Se houver algum erro, o \textbf{MotorRA} deverá disparar uma exceção correspondente (Seção \ref{sec:excecoes}).
+    \item processarJogada() \textit{(abstrato)}: Neste método deverão ser processadas uma a uma as jogadas que um jogador realizar em um certo turno. É obrigatório que a classe \textbf{MotorRA} implemente este método e utilize-o para realizar o processamento das jogadas.
+    \item imprimir() \textit{(final)}: Este método é responsável por imprimir mensagens de ``log'' no terminal e também em um arquivo (dependendo dos parâmetros verbose e saidaArquivo do Motor).
+    \item gerarListaCartasPadrao()  \textit{(final)}: Este método gera uma lista de cartas do baralho padrão LaMa.
+\end{itemize}
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Atributos da classe Motor}
+\label{tab:motor}
+\begin{tabular}{|l|l|p{9cm}|}
+\hline
+\textbf{Atributo} & \textbf{Tipo} & \textbf{Descrição} \\ \hline
+jogador1        & Jogador           & Classe Jogador do primeiro jogador. \\ \hline
+jogador2        & Jogador           & Classe Jogador do segundo jogador.         \\ \hline
+baralho1        & Baralho           & Baralho do primeiro jogador. \\ \hline
+baralho2        & Baralho           & Baralho do segundo jogador.     \\ \hline
+maoJogador1     & ArrayList<Carta>  & Cartas na mão do primeiro jogador.           \\ \hline
+maoJogador2     & ArrayList<Carta>  & Cartas na mão do segundo jogador.      \\ \hline
+lacaiosMesa1    & ArrayList<CartaLacaio>  & Cartas lacaio na mesa do primeiro jogador.   \\ \hline
+lacaiosMesa2    & ArrayList<CartaLacaio>  & Cartas lacaio na mesa do segundo jogador.   \\ \hline
+vidaHeroi1      & int               & Vida do herói 1.   \\ \hline
+vidaHeroi2      & int               & Vida do herói 2.  \\ \hline
+manaJogador1    & int               & Mana do primeiro jogador. \\ \hline
+manaJogador2    & int               & Mana do segundo jogador.  \\ \hline
+verbose         & int               & Flag para verbosidade ligada (1) ou desligada (0).  \\ \hline
+tempoLimitado   & int               & Flag para limite de tempo 300ms ligada (1) ou desligada (0).  \\ \hline
+saidaArquivo    & FileWriter        & Escritor para a saída em um arquivo, ativado (!=null) ou desativado (=null).  \\ \hline
+funcionalidadesAtivas    & EnumSet<Funcionalidades>        & Conjunto contendo as funcionalidades ativas para o Motor  \\ \hline
+\end{tabular}
+\end{table}
+
+A Tabela \ref{tab:motor} lista os atributos da classe \textbf{Motor}. Os atributos deverão ser utilizados durante a implementação da classe MotorRA. Com exceção dos atributos \textit{verbose} e \textit{saidaArquivo}, todos os atributos possuem escopo \textit{protected} e portanto podem ser acessados diretamente pelas classes herdeiras (como é o caso de MotorRA). É responsabilidade da classe \textbf{MotorRA} manipular estes atributos de maneira correta.
+
+Para uma implementação correta deste trabalho é necessário que esses atributos sejam inicializados no construtor através do uso do método \textit{super()}.
+
+\section{Demais classes}
+
+\subsection{Classe Jogador}
+
+O Motor deverá se comunicar com a classe \textbf{Jogador} através dos métodos construtor Jogador() e \textbf{processarTurno()}. O método construtor é executado somente uma vez, fornecendo a mão inicial e a informação se a classe Jogador é primeiro ou segundo jogador na partida. Em seguida serão feitas várias chamadas ao método \textbf{processarTurno()} para cada turno daquela partida.
+
+\subsection{Classe Carta}
+
+A classe Carta é descrita na Tabela \ref{tab:carta}. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. Por convenção, se o nome de um atributo é composto como vidaAtual, então o método get correspondente se chamará getVidaAtual (note que a letra v virou maiúscula).
+
+%Existem dois construtores para a classe Carta, um é utilizado quando a carta é do tipo lacaio e outro quando a carta é do tipo magia.
+
+%O construtor da carta lacaio é dado por: public \textbf{Carta}(int id, String nome, TipoCarta tipo, int ataque, int vida, int vidaMesa, int mana).
+
+%O construtor da carta de magia é dado por: public \textbf{Carta}(int id, String nome, TipoCarta tipo, TipoMagia magiaTipo, int magiaDano, int mana).
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe Carta}
+\label{tab:carta}
+\begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+\hline
+Atributo & Tipo & Descrição & Domínio \\ \hline
+ID       & int       & ID único de uma carta         & Inteiro positivo                 \\ \hline
+nome     & String    & Nome da carta        & String                \\ \hline
+custoMana  & int     & Custo de mana da carta        & Inteiro positivo              \\ \hline
+\end{tabular}
+\end{table}
+
+Note que a classe Carta (Tabela \ref{tab:carta}) é uma classe abstrata. Existem duas classes que herdam da classe Carta: CartaLacaio e CartaMagia que serão descritas a seguir.
+
+\textbf{Atenção:} o método equals() para Carta compara se os IDs das cartas são iguais. A classe Carta implementa a interface Comparable e o somente o atributo ID é utilizado para comparar as cartas. Pode-se supor que qualquer baralho LaMa válido contém IDs únicos para cada jogador e para cada carta (mesmo tratando-se de cartas de mesmo nome).
+
+\subsection{Classe CartaLacaio}
+
+A classe CartaLacaio é descrita na Tabela \ref{tab:cartaLacaio}. Uma vez que a classe CartaLacaio herda da classe Carta, a classe CartaLacaio possui também os atributos e métodos da classe abstrata Carta. Na Tabela \ref{tab:cartaLacaio} são mostrados apenas os atributos específicos da classe CartaLacaio. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. 
+
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe CartaLacaio}
+\label{tab:cartaLacaio}
+\begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+\hline
+Atributo & Tipo & Descrição & Domínio \\ \hline
+ataque   & int       & Ataque da carta        & Inteiro positivo               \\ \hline
+vidaAtual & int       & Vida da carta durante o jogo & Inteiro positivo                \\ \hline
+vidaMaxima & int  & Vida da carta sem contar danos & Inteiro positivo                \\ \hline
+efeito     & TipoEfeito & Efeito especial do lacaio & Enumeração: NADA, INVESTIDA, PROVOCAR ou ATAQUE\_DUPLO \\ \hline
+turno     & int       & (Utilizado pelo Motor) & Inteiro positivo                \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Atenção:} o atributo efeito deverá ser utilizado e considerado pelo \textbf{MotorRA} se e somente se o efeito correspondente estiver contido no conjunto do atributo funcionalidadesAtivas inicializado no \textbf{MotorRA} (Seção \ref{sec:efeitos}).
+
+\subsection{Classe CartaMagia}
+
+A classe CartaMagia é descrita na Tabela \ref{tab:cartaMagia}. Uma vez que a classe CartaMagia herda da classe Carta, a classe CartaMagia possui também os atributos e métodos da classe abstrata Carta. Na Tabela \ref{tab:cartaMagia} são mostrados apenas os atributos específicos da classe CartaMagia. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. 
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe CartaMagia}
+\label{tab:cartaMagia}
+\begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+\hline
+Atributo & Tipo & Descrição & Domínio \\ \hline
+magiaTipo & TipoMagia & Define o tipo da magia & Enumeração: ALVO, AREA ou BUFF \\ \hline
+magiaDano & int       & Valor de dano ou buff  & Inteiro positivo \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Classe Mesa}
+
+A classe Mesa é descrita na Tabela \ref{tab:mesa}. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. A convenção para nomes de get e set é a mesma aplicada para a classe Carta.
+
+A Mesa é um objeto que deverá fornecer ao Jogador no início de seu turno uma ``fotografia'' (estado do jogo) imediatamente antes do turno daquele Jogador, para que ele possa analisar o jogo e tomar as decisões. O objeto mesa entra como argumento do método \textbf{processarTurno()}. Assim permite-se que o jogador consulte a Mesa para descobrir, por exemplo, se um dado lacaio ainda está vivo no jogo ou não.
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe Mesa}
+\label{tab:mesa}
+\begin{tabular}{|l|l|p{4cm}|p{4cm}|}
+\hline
+Atributo & Tipo & Descrição & Domínio \\ \hline
+lacaiosJog1   & ArrayList<CartaLacaio> & Lacaios na mesa do herói 1 & Cartas que são lacaios vivos na mesa \\ \hline
+lacaiosJog2   & ArrayList<CartaLacaio> & Lacaios na mesa do herói 2 & Cartas que são lacaios vivos na mesa \\ \hline
+vidaHeroi1      & int & Vida do herói 1 & Inteiro entre [0,30] \\ \hline
+vidaHeroi2      & int & Vida do herói 2 & Inteiro entre [0,30] \\ \hline
+numCartasJog1   & int & Número de Cartas jogador 1 & Inteiro entre [0,10] \\ \hline
+numCartasJog2   & int & Número de Cartas jogador 2  & Inteiro entre [0,10] \\ \hline
+manaJog1      & int & Mana disponível neste turno para jogador 1 & Inteiro entre [1,10] \\ \hline
+manaJog2      & int & Mana disponível neste turno para jogador 2 & Inteiro entre [1,10] \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Classe Jogada}
+
+A classe Jogada é descrita no texto abaixo. Todos os atributos são privados e seus valores podem ser recuperados por meio dos métodos get e set. A convenção para nomes de get e set é a mesma da aplicada para a classe Carta. Os atributos da classe Jogada são os seguintes:
+
+\begin{itemize}
+    \item \textit{tipo}: Um atributo do tipo \textbf{TipoJogada} (enumeração) que define se a jogada trata-se de baixar um lacaio à mesa (TipoJogada.LACAIO), utilizar uma magia (TipoJogada.MAGIA), atacar com um lacaio (TipoJogada.ATAQUE) ou utilizar um poder heróico (TipoJogada.PODER).
+    \item \textit{cartaJogada}: Um atributo da classe \textbf{Carta} que define qual carta está sendo utilizada. No caso de baixar um lacaio (TipoJogada.LACAIO) é o lacaio que será baixado, no caso de utilizar uma magia é a carta da magia (TipoJogada.MAGIA), no caso de atacar com um lacaio é o lacaio que irá atacar (TipoJogada.ATAQUE). Toma valor \textbf{null} no caso de Poder Heróico.
+    \item \textit{cartaAlvo}: Um atributo da classe \textbf{Carta} que define qual carta será utilizada como alvo. Ou então toma o valor \textbf{null} para ter como alvo o herói do oponente. Se for realizar um ataque (TipoJogada.ATAQUE) ou utilizar uma magia de alvo (TipoJogada.MAGIA) o campo deve conter a carta do lacaio do oponente que será alvo desse dano, ou então \textbf{null} para ter o herói como alvo.
+\end{itemize}
+
+Note que alguns campos não são utilizados dependendo da jogada, a Tabela \ref{tab:jogada} mostra quais campos são utilizados para cada tipo de jogada (X) e quais não são (vazio). Por exemplo, se a jogada é de baixar um lacaio, o tipo será TipoJogada.LACAIO, e o atributo cartaJogada será o lacaio que será baixado à mesa. Porém o atributo cartaAlvo será ignorado e como convenção deve-se utilizar \textbf{null} nesta situação.
+
+O construtor da classe Jogada é: public \textbf{Jogada}(TipoJogada tipo, Carta cartaJogada, Carta cartaAlvo).
+
+\renewcommand{\arraystretch}{1.05}
+\begin{table}[]
+\centering
+\caption{Atributos relevantes por tipo de Jogada}
+\label{tab:jogada}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+Tipo & cartaJogada & cartaAlvo \\ \hline
+TipoJogada.LACAIO          & X &   \\ \hline
+TipoJogada.MAGIA de alvo   & X & X \\ \hline
+TipoJogada.MAGIA de área   & X &   \\ \hline
+TipoJogada.MAGIA de buff   & X & X \\ \hline
+TipoJogada.ATAQUE          & X & X \\ \hline
+TipoJogada.PODER           &   & X \\ \hline
+\end{tabular}
+\end{table}
+
+\section{Efeitos} \label{sec:efeitos}
+
+Um novo recurso do jogo LaMa deverá ser implementado: os efeitos especiais de lacaio. Esses efeitos são caracterizados no objeto CartaLacaio pelo atribudo \textbf{efeito}. Tais efeitos podem ser três:
+
+\begin{itemize}
+	\item INVESTIDA: um lacaio com esse efeito pode atacar no mesmo turno em que é baixado à mesa.
+	\item ATAQUE\_DUPLO: um lacaio com esse efeito pode atacar duas vezes por turno. O lacaio pode atacar dois alvos diferentes. Entretanto, se o primeiro ataque causar a morte do lacaio ele não poderá atacar uma segunda vez.
+	\item PROVOCAR: se houver algum lacaio com esse efeito em campo de um jogador, os lacaios do outro jogador e também o poder heróico deste só poderão ter como alvo o lacaio com efeito provocar. Em outras palavras, não é possível atacar outro alvo diferente do lacaio com \textbf{PROVOCAR}. Somente após o(s) lacaio(s) com \textbf{PROVOCAR} morrer(em) é que é permitido atacar outros alvos. Magias podem ser utilizadas em qualquer alvo independentemente do efeito \textbf{PROVOCAR}.
+\end{itemize}
+
+Os efeitos só terão validade no jogo se o parâmetro \textbf{funcionalidadesAtivas} passado ao \textbf{MotorRA} no construtor ativar cada um dos efeitos. Exemplo: se \textbf{funcionalidadesAtivas} contiver somente as funcionalidades (Seção \ref{ssec:funcionalidade}) Funcionalidade.INVESTIDA e Funcionalidade.ATAQUE\_DUPLO então o MotorRA deverá considerar que os efeitos de INVESTIDA e ATAQUE\_DUPLO estão ativos para a partida em questão mas ignorar o efeito de PROVOCAR.
+
+\textbf{Dica:} é recomendável que a implementação dos efeitos especiais de lacaio seja deixado como última tarefa. A não implementação dessa funcionalidade incorre em uma penalização máxima de até dois pontos na nota final (Seção \ref{ssec:criterio}).
+
+Ligados aos efeitos especiais de lacaio existem duas enumerações descritas nas próximas seções.
+
+\subsection{Enumeração TipoEfeito}
+
+Trata-se de uma enumeração usada como atributo na classe CartaLacaio. A enumeração pode assumir os seguintes valores: NADA, INVESTIDA, ATAQUE\_DUPLO, PROVOCAR.
+
+\subsection{Enumeração Funcionalidade} \label{ssec:funcionalidade}
+
+Trata-se de uma enumeração usada como parâmetro no Motor na declaração do atributo \textbf{funcionalidadesAtivas}. A enumeração pode assumir os seguintes valores: INVESTIDA, ATAQUE\_DUPLO, PROVOCAR.
+
+\section{Funcionamento do Motor}
+
+O Motor deverá funcionar de maneira a controlar o jogo LaMa, interagindo com os jogadores e validando as suas jogadas a cada turno. Assim que houver um vencedor o MotorRA deverá retornar um inteiro informando quem venceu o jogo. Ou, caso seja encontrada uma Jogada inválida, o MotorRA deverá disparar uma exceção do tipo \textbf{LamaException} (Seção \ref{sec:excecoes}) contendo as informações pertinentes.
+
+É através destas informações que o Motor será posteriormente avaliado quanto à corretude (além de inspeção do código), portanto é muito importante preencher essas informações corretamente. Mais informações para preenchimento dos atributos de \textbf{LamaException} estão na Seção \ref{sec:excecoes}.
+
+Além disso o Motor deverá informar com mensagens cada jogada que é realizada por qual jogador e quais os efeitos destas jogadas. Detalhes sobre as mensagens estão na Seção \ref{sec:mensagens}.
+
+\subsection{Mensagens de Jogadas} \label{sec:mensagens}
+
+A classe \textbf{MotorRA} deverá utilizar o método \textbf{imprimir()} para imprimir mensagens referentes a todas as Jogadas e também da transição de turnos.
+
+Estas mensagens poderão ser posteriormente visualizadas para se obter um ``log'' (relatório) do jogo, igual ao Motor apresentado no Trabalho 1. Não existe um formato fixo para as mensagens, contudo elas devem ser sucintas e dar a quem lê todas as informações pertinentes para entender o que se passa no jogo.
+
+Contribuirão para a nota do trabalho a impressão de mensagens claras e completas do jogo. É importante imprimir mensagens de maneira que qualquer pessoa que conheça o jogo LaMa consiga entender. Em caso de dúvidas, o aluno poderá utilizar como exemplo as mensagens de logs geradas no Campeonato do Trabalho 1 disponíveis no site do docente (\url{http://www.ic.unicamp.br/~fusberti}).
+
+\subsection{Erros de Jogadas Inválidas} \label{sec:excecoes}
+
+A classe \textbf{MotorRA} deverá implementar um mecanismo para detectar possíveis jogadas inválidas realizadas pelos jogadores e disparar exceções de acordo com o tipo de jogada inválida.
+
+No caso de uma partida se encerrar normalmente, porque um dos jogadores venceu o outro levando a vida do oponente a zero, nenhuma exceção deverá ser disparada e o método executarPartida deverá retornar $1$ se o primeiro jogador venceu o jogo e $2$ se o segundo jogador venceu o jogo.
+
+No caso de ocorrer um erro, uma exceção do tipo \textbf{LamaException} deverá ser disparada. Os atributos da classe \textbf{LamaException} são mostrados na tabela \ref{tab:lamaexception}. A vitória deverá ser dada para o jogador que não cometeu o erro (ou seja, o jogador que comete o erro ``perde'' imediatamente e o outro jogador é declarado vencedor). Por isso, o atributo de \textit{vencedor} deve ser ajustado nesse sentido. O atributo \textit{numeroErro} precisa ser configurado com um número inteiro maior do que zero, correspondente ao erro que foi encontrado (conferir Tabela \ref{tab:erros}). O atributo \textit{jogadaInvalida} deve ser preenchido com a Jogada que verificou-se inválida. Por fim, o atributo \textit{message} deve ter uma mensagem contendo informações do erro. A mensagem é de formato livre mas deverá conter \textbf{pelo menos} as informações descritas na Tabela \ref{tab:erros}.
+
+Portanto cada jogada precisa ser verificada, em ordem, se não viola nenhuma regra antes de ser executada no jogo. Assim que for verificada uma jogada inválida, o \textbf{MotorRA} deverá realizar disparar a exceção contendo todas as informações pertinentes.
+
+\renewcommand{\arraystretch}{1.15}
+\begin{table}[h]
+\centering
+\caption{Classe LamaException}
+\label{tab:lamaexception}
+\begin{tabular}{|l|l|p{8cm}|}
+\hline
+Atributo            & Tipo      & Conteúdo \\ \hline
+numeroErro              & int       & Um inteiro representando o número da regra violada (Tabela \ref{tab:erros}) \\ \hline
+vencedor            & int       & Quando o primeiro jogador for o responsável pelo erro, 2. Caso contrário, 1.\\ \hline
+jogada      & Jogada    & O objeto Jogada que foi considerado inválido \\ \hline
+message        & String    & Uma String contendo o mesmo texto idêntico à mensagem de erro enviada através do método imprimir() (veja Tabela \ref{tab:erros}). \\ \hline
+\end{tabular}
+\end{table}
+
+\renewcommand{\arraystretch}{1.05}
+\begin{table}[t]
+\centering
+\caption{Tabela de códigos de erros}
+\label{tab:erros}
+\begin{tabular}{|l|p{4cm}|p{10cm}|}
+\hline
+Código & Descrição do erro & Mensagem de erro deve conter \textbf{pelo menos} e de maneira clara \\ \hline
+1 & Baixar lacaio ou usar magia sem possuir a carta na mão & ID da carta que seria usada/baixada, IDs das cartas na mão. \\ \hline
+2 & Realizar uma jogada que o limite de mana não permite & O Tipo da Jogada, quanto de mana a jogada custaria, quanto de mana há disponível. \\ \hline
+3 & Tentar baixar uma carta de magia como carta lacaio & ID e nome da carta que seria utilizada incorretamente \\ \hline
+4 & Baixar um lacaio já tendo sete outros lacaios em mesa & ID e nome do lacaio que iria ser baixado \\ \hline
+5 & Atacar com um lacaio invalido de origem do ataque & ID (inválido) da carta lacaio que iria atacar \\ \hline
+6 & Atacar com um lacaio que foi baixado neste turno & ID da carta lacaio que iria atacar \\ \hline
+7 & Atacar com um lacaio mais de uma vez por turno & ID da carta lacaio que iria atacar\\ \hline
+8 & Atacar com um lacaio um alvo inválido & ID do lacaio atacante, ID (inválido) do alvo que seria atacado \\ \hline
+9 & Tentar usar uma carta de lacaio como uma magia & ID e nome da carta que seria utilizada incorretamente \\ \hline
+10 & Usar uma magia de alvo ou buff em um alvo inválido & ID da magia de alvo, ID (inválido) do alvo \\ \hline
+11 & Usar o poder heróico mais de uma vez por turno & ID do alvo \\ \hline
+12 & Usar o poder heróico em um alvo inválido & ID do alvo inválido \\ \hline
+13 & Existindo um lacaio com provocar, atacar outro alvo & ID do alvo inválido, ID do lacaio vivo com provocar \\ \hline
+\multicolumn{3}{c}{Obs: Deve-se escrever na mensagem ``Herói X'' quando o herói for o alvo, X sendo 1 ou 2.}
+\end{tabular}
+\end{table}
+
+\section{Independência de Baralho}
+
+O MotorRA deverá funcionar para qualquer baralho contendo cartas LaMa válidas e não somente para o baralho padrão disponibilizado.
+
+\section{Diagrama} \label{sec:diagrama}
+
+É disponibilizado para o Trabalho 2 um diagrama de classes contendo as principais classes utilizadas nesse projeto. É recomendável a consulta ao diagrama para uma visão mais sistêmica do projeto.
+
+\section{Saída do programa}
+
+\textbf{Atenção}: a classe \textbf{MotorRA} deve imprimir mensagens apenas através do método \textbf{imprimir()}. Qualquer impressão fora deste método será considerada fora do padrão e penalizada de acordo.
+
+\section{Critério de Avaliação}
+
+O trabalho será avaliado através dos seguintes critérios:
+
+\begin{align}
+NT2 = 0.6 \times NP_1 + 0.2 \times NP_2 + 0.1 \times NP_3 + 0.05 \times NP_4 + 0.05 \times NP_5
+\end{align}
+
+Onde:
+
+\begin{itemize}
+    \item $NT_2$: Nota do Trabalho 2
+    \item $NP_1$: Nota correspondente ao critério de corretude.
+    \item $NP_2$: Nota correspondente ao critério de aderência ao enunciado.
+    \item $NP_3$: Nota correspondente ao critério de mensagens do motor.
+    \item $NP_4$: Nota correspondente ao critério de comentários.
+    \item $NP_5$: Nota correspondente ao critério de convenções.
+\end{itemize}
+
+\subsection{Critérios de avaliação} \label{ssec:criterio}
+
+\begin{enumerate}
+    \item \textbf{Corretude:} O código não deve possuir \textit{warnings} ou erros de compilação. O código não deve emitir \textit{exceptions} em nenhuma situação. Em cada partida que o jogo acabar normalmente deverá ser devolvido um inteiro representando o vencedor. Ou se os jogadores realizarem jogadas inválidas, o MotorRA deverá devolver disparar um \textbf{LamaException} com os atributos exatamente de acordo com a especificação.
+    \item \textbf{Aderência ao Enunciado:} A implementação deve realizar o que é requisitado no enunciado, atendendo a todos os avisos e observações.
+    \item \textbf{Mensagens do Motor:} As mensagens que o Motor emitir com o método imprimir() devem ser sucintas e ao mesmo tempo possuir as informações relevantes para informar cada jogada.
+    \item \textbf{Comentários:} Os comentários devem ser suficientes para explicar os trechos mais importantes da implementação e bem identados, com preferência para o formato JavaDoc \footnote{\url{https://pt.wikipedia.org/wiki/Javadoc}}.
+    \item \textbf{Convenções:} A implementação deve seguir as convenções de nomes de atributos e métodos do Java. O encapsulamento dos atributos deve ser observado.
+\end{enumerate}
+
+\section{Observações}
+
+\begin{itemize}
+    \item O trabalho é individual.
+    \item Não é permitido nenhum tipo de compartilhamento de código entre os alunos ou o uso de códigos de terceiros. Uma única exceção permitida consiste na API padrão da linguagem Java \footnote{\url{http://docs.oracle.com/javase/8/docs/api/}}. Em caso de plágio, todos os alunos envolvidos serão reprovados com média zero.
+    \item O aluno deve realizar os testes de sua classe no ambiente de programação JavaSE 1.8 (Java 8). Uma vez que os códigos serão testados nesse ambiente.
+\end{itemize}
+ 
+\section{Submissão}
+
+O trabalho deverá ser submetido até às 23:55 do dia 27 de junho pelo moodle. A submissão deve ser exclusivamente um arquivo \textbf{MotorRAxxxxxx.java} (onde ``'xxxxxx' é o RA do aluno). \textbf{Importante}: em caso de mais de uma classe, todas as classes deverão estar no mesmo arquivo e somente a classe \textbf{MotorRAxxxxxx} deve ser pública.
+
+\end{document}
+% end of file template.tex
